@@ -291,7 +291,7 @@ for z in range(1, 2):
     )
     history = model.fit(
         train_ds,
-        validation_data=train_ds,
+        validation_data=val_ds,
         epochs=EPOCHS,
         callbacks=tensorboard_callback,#[tf.keras.callbacks.EarlyStopping(verbose=1, patience=2),
     )
@@ -307,12 +307,11 @@ for z in range(1, 2):
     test_audio = []
     test_labels = []
 
-    for audio, label in test_ds:
-      test_audio.append(audio.numpy())
-      test_labels.append(label.numpy())
+    test_audio = np.concatenate([x.numpy() for x, _ in test_ds], axis=0)
+    test_labels = np.concatenate([y.numpy() for _, y in test_ds], axis=0)
 
-    test_audio = np.array(test_audio)
-    test_labels = np.array(test_labels)
+    # test_audio = np.array(test_audio)
+    # test_labels = np.array(test_labels)
 
     y_pred = np.argmax(model.predict(test_audio), axis=1)
     y_true = test_labels
